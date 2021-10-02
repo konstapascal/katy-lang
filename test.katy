@@ -1,0 +1,17 @@
+// this is a comment, it will be ignored by the interpreter and compiler
+
+// katy currently supports basic mathematical operations and writing to the console
+// the math operations can take multiple args
+// the write operation takes one string as arg 
+
+// below is an example program
+
+write "Hello World!"
+
+add 2 4
+subtract 2 8
+multiply 2 2 2 2
+divide 2 2
+
+// use the command "katy run test.katy" to interpret/run the program
+// use the command "katy compile test.katy" to compile the program

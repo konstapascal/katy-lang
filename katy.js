@@ -9,9 +9,9 @@ async function main() {
 			// linux/mac
 			!entry.endsWith('/bin/node') &&
 			!entry.endsWith('/bin/katy') &&
-			// win
+			// windows
 			!entry.endsWith('node.exe') &&
-			!entry.endsWith('katy.exe')
+			!entry.endsWith('katy.js')
 	);
 
 	const subcommand = args[0];
@@ -20,8 +20,8 @@ async function main() {
 	let data;
 
 	try {
-		if (!args.length) throw Error('ERROR: no subcommand was provided');
-		if (!filePath) throw Error('ERROR: no file was provided');
+		if (!args.length) throw Error('ERROR: no subcommand was provided, try run or compile');
+		if (!filePath) throw Error('ERROR: no file, provide a relative path');
 		if (path.extname(filePath) !== '.katy') throw Error('ERROR: invalid file');
 
 		data = await getFileContents(filePath);

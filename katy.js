@@ -3,18 +3,21 @@
 const fs = require('fs/promises');
 const path = require('path');
 
-const args = process.argv.splice(process.argv.length - 2);
+const args = process.argv.filter(
+	entry => !entry.endsWith('node.exe') && !entry.endsWith('katy.js')
+);
 
 const mode = args[0];
-const file = args[1];
+const filePath = args[1] || undefined;
 
 async function main() {
 	let data;
 
 	try {
-		if (path.extname(file) !== '.katy')
-			throw Error(`EEXT: given file is not a .katy file, open '${path.join(__dirname, file)}'`);
-		data = await getFileContents(file);
+		if (!filePath) throw Error('ERROR: no file was provided');
+		if (path.extname(filePath) !== '.katy') throw Error('ERROR: invalid file');
+
+		data = await getFileContents(filePath);
 	} catch (err) {
 		return console.error(err.message);
 	}
@@ -26,8 +29,8 @@ async function main() {
 	if (mode === 'run') return interpretProgram(parsedProgramLines);
 }
 
-async function getFileContents(file) {
-	const data = await fs.readFile(path.join(__dirname, file));
+async function getFileContents(filePath) {
+	const data = await fs.readFile(path.join(process.cwd(), filePath));
 	return data.toString();
 }
 

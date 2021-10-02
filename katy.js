@@ -3,17 +3,24 @@
 const fs = require('fs/promises');
 const path = require('path');
 
-const args = process.argv.filter(
-	entry => !entry.endsWith('node.exe') && !entry.endsWith('katy.js')
-);
-
-const mode = args[0];
-const filePath = args[1] || undefined;
-
 async function main() {
+	const args = process.argv.filter(
+		entry =>
+			// linux/mac
+			!entry.endsWith('/bin/node') &&
+			!entry.endsWith('/bin/katy') &&
+			// win
+			!entry.endsWith('node.exe') &&
+			!entry.endsWith('katy.exe')
+	);
+
+	const subcommand = args[0];
+	const filePath = args[1] || undefined;
+
 	let data;
 
 	try {
+		if (!args.length) throw Error('ERROR: no subcommand was provided');
 		if (!filePath) throw Error('ERROR: no file was provided');
 		if (path.extname(filePath) !== '.katy') throw Error('ERROR: invalid file');
 
@@ -25,8 +32,10 @@ async function main() {
 	const programLines = data.split('\n');
 	const parsedProgramLines = parseLines(programLines);
 
-	if (mode === 'compile') return compileProgram(parsedProgramLines);
-	if (mode === 'run') return interpretProgram(parsedProgramLines);
+	if (subcommand === 'compile') return compileProgram(parsedProgramLines);
+	if (subcommand === 'run') return interpretProgram(parsedProgramLines);
+
+	console.log(`ERROR: ${subcommand} not recognized as a subcommand`);
 }
 
 async function getFileContents(filePath) {
@@ -41,7 +50,7 @@ function parseLines(lines) {
 }
 
 function compileProgram(lines) {
-	console.log('Compilation not implemeneted!');
+	console.log('ERROR: compilation not implemented');
 }
 
 function interpretProgram(lines) {
@@ -49,11 +58,11 @@ function interpretProgram(lines) {
 		const tokens = line.split(' ');
 		const command = tokens[0];
 
-		if (command === 'add') add(tokens.slice(1));
-		if (command === 'subtract') subtract(tokens.slice(1));
-		if (command === 'multiply') multiply(tokens.slice(1));
-		if (command === 'divide') divide(tokens.slice(1));
-		if (command === 'write') write(tokens.slice(1).join(' '));
+		if (command === 'add') return add(tokens.slice(1));
+		if (command === 'subtract') return subtract(tokens.slice(1));
+		if (command === 'multiply') return multiply(tokens.slice(1));
+		if (command === 'divide') return divide(tokens.slice(1));
+		if (command === 'write') return write(tokens.slice(1).join(' '));
 	});
 }
 
